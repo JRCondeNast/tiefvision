@@ -31,7 +31,7 @@ export TIEFVISION_HOME=<PATH_TO_TIEFVISION_REPOSITORY>
 ## Database setup
 
 **TiefVision** uses a database to store data regarding bounding boxes in images and also similarities between images.
-**TiefVision** has an easy to run **H2** docker image that can be built and run via **$TIEFVISION_HOME/src/h2/service**.
+**TiefVision** has an easy to run **H2** docker image that can be built and run via **$TIEFVISION_HOME/src/h2/service start**. If you get an error message from docker: dial unix /var/run/docker.sock: connect: permission denied. You should add yourself to docker group by sudo usermod -a -G docker <username> and logout and login again.
 **TiefVision**'s can be configured to use another database, like postgresql.
 Just change **slick.dbs.bounding_box.* ** from **$TIEFVISION_HOME/src/scala/tiefvision-web/conf/application.conf**.
 
