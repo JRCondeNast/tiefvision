@@ -19,7 +19,6 @@ case "$1" in
       --detach \
       --name $DOCKER_SERVICE_NAME \
       --publish 54321:5432 \
-      --volume $ROOT/src/postgres/postgresql:/var/lib/postgresql \
       $DOCKER_IMAGE_NAME
     ;;
 
