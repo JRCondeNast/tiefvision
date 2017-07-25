@@ -32,6 +32,7 @@ src/scala/tiefvision-web/activator
 src/torch/models/
 src/scala/tiefvision-web/target
 src/torch/data/db
+src/python/data
 .idea
 
 # H2 database
