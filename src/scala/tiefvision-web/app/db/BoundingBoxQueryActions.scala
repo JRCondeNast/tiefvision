@@ -21,7 +21,7 @@ object BoundingBoxQueryActions extends App with HasDatabaseConfig[JdbcProfile] {
 
   lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("bounding_box")(Play.current)
   lazy val logger: Logger = Logger(this.getClass())
-  lazy val boundingBoxTableQuery = TableQuery[BoundingBoxTableV2]
+  lazy val boundingBoxTableQuery = TableQuery[BoundingBoxTable]
 
   def getBoundingBoxByFileName(name: String) = {
     val selectByName = boundingBoxTableQuery.filter{ boundingBoxTable =>

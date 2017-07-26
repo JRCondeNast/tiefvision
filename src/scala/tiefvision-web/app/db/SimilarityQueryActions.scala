@@ -7,7 +7,7 @@ package db
 
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.{Logger, Play}
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 import slick.driver.JdbcProfile
 import slick.jdbc.JdbcBackend
 

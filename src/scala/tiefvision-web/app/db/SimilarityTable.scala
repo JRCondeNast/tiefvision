@@ -5,7 +5,7 @@
   */
 package db
 
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 import db.Dataset._
 
 class SimilarityTable(tag: Tag) extends Table[Similarity](tag, "SIMILARITY") {
