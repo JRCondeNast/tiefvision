@@ -9,6 +9,7 @@ object Configuration {
   val NumSamples = 5
   val BoundingBoxesFolder = "resources/bounding-boxes"
   val ScaledImagesFolder = "resources/bounding-boxes/scaled-images"
+  val ScaledImagesFolderV2 = "resources/bounding-boxes/scaled-imagesV2"
   val CropImagesFolder = "resources/bounding-boxes/crops"
   val CropImagesFolderV2 = "resources/bounding-boxes/cropsV2"
   val BackgroundCropImagesFolder = "resources/bounding-boxes/background-crops"

@@ -79,6 +79,16 @@ object ImageProcessing {
     }
   }
 
+  def saveImageScaledV2(scaledBoundingBox: BoundingBoxV2, scale: Int) = {
+    import sys.process._
+    val destinationFile = s"${Configuration.HomeFolder}/${Configuration.ScaledImagesFolderV2}/${scaledBoundingBox.name}_${scale}"
+    if (!Files.exists(Paths.get(destinationFile))) {
+      val sourceFile = s"${Configuration.HomeFolder}/${Configuration.DbImagesFolder}/${scaledBoundingBox.name}"
+      val scaleImagesCommand = s"convert $sourceFile  -resize ${scaledBoundingBox.width}x $destinationFile"
+      scaleImagesCommand !!;
+    }
+  }
+
   def boundingBoxTypeFolder(extendBoundingBox: Boolean) = if (extendBoundingBox) "extended" else "original"
 
   def generateBackgroundCrops(scaledBoundingBox: BoundingBox, scale: Int, extendBoundingBox: Boolean) = {
