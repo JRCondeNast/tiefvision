@@ -238,11 +238,11 @@ object DatabaseProcessing {
     val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       boundingBoxesSeq.foreach { boundingBox =>
-        if (!cropsGenerated(boundingBox)) {
+        if (!cropsGeneratedV2(boundingBox)) {
           Configuration.scaleLevelsV2.foreach { scaleLevel =>
             val scale = boundingBox.width.toDouble / (Configuration.CropSize.toDouble * scaleLevel.toDouble)
             val scaledBoundingBox = boundingBox div scale
-            ImageProcessing.saveImageScaled(scaledBoundingBox, scaleLevel)
+            ImageProcessing.saveImageScaledV2(scaledBoundingBox, scaleLevel)
             ImageProcessing.generateCropsV2(scaledBoundingBox, scaleLevel, extendBoundingBox)
           }
         }
@@ -268,6 +268,12 @@ object DatabaseProcessing {
 
   def cropsGenerated(scaledBoundingBox: BoundingBox): Boolean = {
     val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolder}"
+    val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
+    cropsDirectoryFiles.foldLeft(false)((exists, file) => exists || file.getName.startsWith(scaledBoundingBox.name))
+  }
+
+  def cropsGeneratedV2(scaledBoundingBox: BoundingBoxV2): Boolean = {
+    val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolderV2}"
     val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
     cropsDirectoryFiles.foldLeft(false)((exists, file) => exists || file.getName.startsWith(scaledBoundingBox.name))
   }
