@@ -7,7 +7,6 @@ package db
 
 import core.Crop
 import db.Dataset._
-import slick.driver.H2Driver.api._
 import slick.driver.PostgresDriver.api._
 
 
