@@ -142,7 +142,7 @@ object DatabaseProcessing {
       )
 
   def generateBoundingBoxTrainAndTestSetFiles(extendedBoundingBox: Boolean) = {
-    val boundingBoxesSeqFut = BoundingBoxQueryActions.getAllBoundingBoxes()
+    val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       generateBoundingBoxDatasetFile(boundingBoxesSeq, Dataset.TrainingSet, extendedBoundingBox)
       generateBoundingBoxDatasetFile(boundingBoxesSeq, Dataset.TestSet, extendedBoundingBox)
@@ -150,7 +150,7 @@ object DatabaseProcessing {
   }
 
   def generateClassificationTrainAndTestSetFiles(extendBoundingBox: Boolean) = {
-    val boundingBoxesSeqFut = BoundingBoxQueryActions.getAllBoundingBoxes()
+    val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       generateClassificationDatasetFile(boundingBoxesSeq, Dataset.TrainingSet, extendBoundingBox)
       generateClassificationDatasetFile(boundingBoxesSeq, Dataset.TestSet, extendBoundingBox)
@@ -159,7 +159,7 @@ object DatabaseProcessing {
     }
   }
 
-  def generateClassificationBackgroundDatasetFile(boundingBoxes: Seq[BoundingBox], dataset: Dataset, extendBoundingBox: Boolean) = {
+  def generateClassificationBackgroundDatasetFile(boundingBoxes: Seq[BoundingBoxV2], dataset: Dataset, extendBoundingBox: Boolean) = {
     val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.BackgroundCropImagesFolder}/${ImageProcessing.boundingBoxTypeFolder(extendBoundingBox)}"
     val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
     val boundingBoxesInDataset = boundingBoxes.filter(_.dataset == dataset)
@@ -173,7 +173,7 @@ object DatabaseProcessing {
     writer.close()
   }
 
-  def generateClassificationDatasetFile(boundingBoxes: Seq[BoundingBox], dataset: Dataset, extendBoundingBox: Boolean) = {
+  def generateClassificationDatasetFile(boundingBoxes: Seq[BoundingBoxV2], dataset: Dataset, extendBoundingBox: Boolean) = {
     val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolder}/${ImageProcessing.boundingBoxTypeFolder(extendBoundingBox)}"
     val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
     val boundingBoxesInDataset = boundingBoxes.filter(_.dataset == dataset)
@@ -187,7 +187,7 @@ object DatabaseProcessing {
     writer.close()
   }
 
-  def generateBoundingBoxDatasetFile(boundingBoxes: Seq[BoundingBox], dataset: Dataset, extendBoundingBox: Boolean) = {
+  def generateBoundingBoxDatasetFile(boundingBoxes: Seq[BoundingBoxV2], dataset: Dataset, extendBoundingBox: Boolean) = {
     val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolder}/${ImageProcessing.boundingBoxTypeFolder(extendBoundingBox)}"
     val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
     val boundingBoxesInDataset = boundingBoxes.filter(_.dataset == dataset)
@@ -202,7 +202,7 @@ object DatabaseProcessing {
   }
 
   def setDatasetToUnknownDatasets() = {
-    val boundingBoxesSeqFut = BoundingBoxQueryActions.getAllBoundingBoxes()
+    val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       val testCount = boundingBoxesSeq.filter(_.dataset == Dataset.TestSet).size.toDouble
       val undefinedBoundingBoxes = boundingBoxesSeq.filter(_.dataset == Dataset.UndefinedSet)
@@ -210,16 +210,16 @@ object DatabaseProcessing {
       val testSamplesToAdd = undefinedBoundingBoxes.take(testSamplesCountToAdd)
       val trainSamplesToAdd = undefinedBoundingBoxes.toSet &~ testSamplesToAdd.toSet
       testSamplesToAdd.foreach { testSampleToAdd =>
-        BoundingBoxQueryActions.insertOrUpdate(testSampleToAdd.copy(dataset = Dataset.TestSet))
+        BoundingBoxQueryActionsV2.insertOrUpdate(testSampleToAdd.copy(dataset = Dataset.TestSet))
       }
       trainSamplesToAdd.foreach { trainSampleToAdd =>
-        BoundingBoxQueryActions.insertOrUpdate(trainSampleToAdd.copy(dataset = Dataset.TrainingSet))
+        BoundingBoxQueryActionsV2.insertOrUpdate(trainSampleToAdd.copy(dataset = Dataset.TrainingSet))
       }
     }
   }
 
   def generateBoundingBoxDatabaseImages(extendBoundingBox: Boolean) = {
-    val boundingBoxesSeqFut = BoundingBoxQueryActions.getAllBoundingBoxes()
+    val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       boundingBoxesSeq.foreach { boundingBox =>
         if (!cropsGenerated(boundingBox)) {
@@ -234,8 +234,24 @@ object DatabaseProcessing {
     }
   }
 
+  def generateBoundingBoxDatabaseImagesV2(extendBoundingBox: Boolean) = {
+    val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
+    boundingBoxesSeqFut.map { boundingBoxesSeq =>
+      boundingBoxesSeq.foreach { boundingBox =>
+        if (!cropsGenerated(boundingBox)) {
+          Configuration.scaleLevelsV2.foreach { scaleLevel =>
+            val scale = boundingBox.width.toDouble / (Configuration.CropSize.toDouble * scaleLevel.toDouble)
+            val scaledBoundingBox = boundingBox div scale
+            ImageProcessing.saveImageScaled(scaledBoundingBox, scaleLevel)
+            ImageProcessing.generateCropsV2(scaledBoundingBox, scaleLevel, extendBoundingBox)
+          }
+        }
+      }
+    }
+  }
+
   def generateBackgroundBoundingBoxDatabaseImages(extendBoundingBox: Boolean) = {
-    val boundingBoxesSeqFut = BoundingBoxQueryActions.getAllBoundingBoxes()
+    val boundingBoxesSeqFut = BoundingBoxQueryActionsV2.getAllBoundingBoxes()
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       boundingBoxesSeq.foreach { boundingBox =>
         if (!backgroundCropsGenerated(boundingBox)) {
@@ -250,13 +266,13 @@ object DatabaseProcessing {
     }
   }
 
-  def cropsGenerated(scaledBoundingBox: BoundingBox): Boolean = {
+  def cropsGenerated(scaledBoundingBox: BoundingBoxV2): Boolean = {
     val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolder}"
     val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
     cropsDirectoryFiles.foldLeft(false)((exists, file) => exists || file.getName.startsWith(scaledBoundingBox.name))
   }
 
-  def backgroundCropsGenerated(scaledBoundingBox: BoundingBox): Boolean = {
+  def backgroundCropsGenerated(scaledBoundingBox: BoundingBoxV2): Boolean = {
     val cropsFolderName = s"${Configuration.HomeFolder}/${Configuration.BackgroundCropImagesFolder}"
     val cropsDirectoryFiles = new File(cropsFolderName).listFiles()
     cropsDirectoryFiles.foldLeft(false)((exists, file) => exists || file.getName.startsWith(scaledBoundingBox.name))

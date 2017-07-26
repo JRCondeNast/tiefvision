@@ -71,7 +71,7 @@ class Application extends Controller {
   }
 
   def saveBoundingBox(name: String, left: Int, right: Int, top: Int, bottom: Int, width: Int, height: Int) = Action {
-    BoundingBoxQueryActions.insertOrUpdate(BoundingBox(name = name, top = top,
+    BoundingBoxQueryActionsV2.insertOrUpdate(BoundingBoxV2(name = name, top = top,
       left = left, bottom = bottom, right = right, width = width, height = height, dataset = Dataset.UndefinedSet))
     Redirect(routes.Application.index)
   }
@@ -83,7 +83,7 @@ class Application extends Controller {
   }
 
   def editBoundingBox(name: String) = Action.async {
-    val boundingBoxFutOpt = BoundingBoxQueryActions.getBoundingBoxByFileName(name)
+    val boundingBoxFutOpt = BoundingBoxQueryActionsV2.getBoundingBoxByFileName(name)
     boundingBoxFutOpt.map { boundingBoxOpt =>
       boundingBoxOpt.fold {
         Ok(views.html.editBoundingBox(name))
@@ -101,6 +101,12 @@ class Application extends Controller {
 
   def generateBoundingBoxesCrops() = Action.async {
     DatabaseProcessing.generateBoundingBoxDatabaseImages(true).map { generated =>
+      Ok("Bounding Boxes Crops Generated.")
+    }
+  }
+
+  def generateBoundingBoxesCropsV2() = Action.async {
+    DatabaseProcessing.generateBoundingBoxDatabaseImagesV2(true).map { generated =>
       Ok("Bounding Boxes Crops Generated.")
     }
   }
