@@ -8,6 +8,7 @@ GET     /save_bounding_box          controllers.Application.saveBoundingBox(name
 GET     /edit_bounding_box          controllers.Application.editBoundingBox(name: String)
 
 # Bounding box training and test sets generation
+GET     /generate_bounding_boxes_crops_v2                controllers.Application.generateBoundingBoxesCropsV2()
 GET     /generate_bounding_boxes_crops                   controllers.Application.generateBoundingBoxesCrops()
 GET     /generate_bounding_box_train_and_test_files      controllers.Application.generateBoundingBoxTrainAndTestFiles()
 GET     /generate_classification_train_and_test_files    controllers.Application.generateClassificationTrainAndTestFiles()

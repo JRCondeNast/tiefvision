@@ -11,6 +11,7 @@ import java.nio.file.{Files, Paths}
 
 import controllers.Configuration
 import db.BoundingBox
+import db.BoundingBoxV2
 import scala.sys.process.Process
 
 object ImageProcessing {
@@ -129,6 +130,25 @@ object ImageProcessing {
         }
       }
     }
+  }
+
+  def generateCropsV2(scaledBoundingBox: BoundingBoxV2, scale: Int, extendBoundingBox: Boolean) = {
+    import sys.process._
+    val randomCrop = generateCrop(scaledBoundingBox)
+    val destinationFilename =
+      s"${scaledBoundingBox.name}___${scaledBoundingBox.width}_${scaledBoundingBox.height}_${scaledBoundingBox.object_class}" +
+        s"${scaledBoundingBox.left}_${scaledBoundingBox.top}_${scaledBoundingBox.right}_${scaledBoundingBox.bottom}.jpg"
+    val destinationFilePath = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolderV2}/${boundingBoxTypeFolder(extendBoundingBox)}/${destinationFilename}"
+    val sourceFilePath = s"${Configuration.HomeFolder}/${Configuration.ScaledImagesFolder}/${scaledBoundingBox.name}_${scale}"
+    s"convert ${sourceFilePath} -crop ${randomCrop.right}x${randomCrop.bottom}+${randomCrop.left}+${randomCrop.top} -type truecolor ${destinationFilePath}" !!;
+  }
+
+  def generateCrop(boundingBox: BoundingBoxV2) = {
+    val left = boundingBox.left
+    val right = boundingBox.right
+    val top = boundingBox.top
+    val bottom = boundingBox.bottom
+    Crop(left = left, right = right, top = top, bottom = bottom)
   }
 
   def generateRandomCrop(boundingBox: BoundingBox) = {

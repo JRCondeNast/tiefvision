@@ -21,7 +21,7 @@ object BoundingBoxQueryActions extends App with HasDatabaseConfig[JdbcProfile] {
 
   lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("bounding_box")(Play.current)
   lazy val logger: Logger = Logger(this.getClass())
-  lazy val boundingBoxTableQuery = TableQuery[BoundingBoxTable]
+  lazy val boundingBoxTableQuery = TableQuery[BoundingBoxTableV2]
 
   def getBoundingBoxByFileName(name: String) = {
     val selectByName = boundingBoxTableQuery.filter{ boundingBoxTable =>
@@ -32,7 +32,7 @@ object BoundingBoxQueryActions extends App with HasDatabaseConfig[JdbcProfile] {
 
   def getAllBoundingBoxes() = db.run(boundingBoxTableQuery.result)
 
-  def insertOrUpdate(boundingBox: BoundingBox) = {
+  def insertOrUpdate(boundingBox: BoundingBoxV2) = {
     val insertOrUpdateAction = boundingBoxTableQuery.insertOrUpdate(boundingBox)
     val insertOrUpdateResult = db.run(insertOrUpdateAction)
     insertOrUpdateResult.onFailure { case err => db: JdbcBackend#DatabaseDef
