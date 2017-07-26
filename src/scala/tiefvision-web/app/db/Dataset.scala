@@ -4,7 +4,7 @@
   * terms of the Apache License v2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt).
   */
 package db
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 
 object Dataset extends Enumeration {
   type Dataset = Value

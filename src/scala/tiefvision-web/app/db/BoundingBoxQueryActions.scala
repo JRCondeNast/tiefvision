@@ -32,7 +32,7 @@ object BoundingBoxQueryActions extends App with HasDatabaseConfig[JdbcProfile] {
 
   def getAllBoundingBoxes() = db.run(boundingBoxTableQuery.result)
 
-  def insertOrUpdate(boundingBox: BoundingBoxV2) = {
+  def insertOrUpdate(boundingBox: BoundingBox) = {
     val insertOrUpdateAction = boundingBoxTableQuery.insertOrUpdate(boundingBox)
     val insertOrUpdateResult = db.run(insertOrUpdateAction)
     insertOrUpdateResult.onFailure { case err => db: JdbcBackend#DatabaseDef

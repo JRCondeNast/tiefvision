@@ -7,7 +7,7 @@ package db
 
 import core.Crop
 import db.Dataset._
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 
 
 class BoundingBoxTable(tag: Tag) extends Table[BoundingBox](tag, "BOUNDING_BOX") {

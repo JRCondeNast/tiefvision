@@ -19,7 +19,7 @@ import scala.concurrent.duration.Duration
 
 object BoundingBoxQueryActionsV2 extends App with HasDatabaseConfig[JdbcProfile] {
 
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("bounding_box")(Play.current)
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("bounding_box_info")(Play.current)
   lazy val logger: Logger = Logger(this.getClass())
   lazy val boundingBoxTableQuery = TableQuery[BoundingBoxTableV2]
 
