@@ -239,12 +239,11 @@ object DatabaseProcessing {
     boundingBoxesSeqFut.map { boundingBoxesSeq =>
       boundingBoxesSeq.foreach { boundingBox =>
         if (!cropsGeneratedV2(boundingBox)) {
-          Configuration.scaleLevelsV2.foreach { scaleLevel =>
-            val scale = boundingBox.width.toDouble / (Configuration.CropSize.toDouble * scaleLevel.toDouble)
-            val scaledBoundingBox = boundingBox div scale
-            ImageProcessing.saveImageScaledV2(scaledBoundingBox, scaleLevel)
-            ImageProcessing.generateCropsV2(scaledBoundingBox, scaleLevel, extendBoundingBox)
-          }
+
+
+            val scaledBoundingBox = boundingBox
+            ImageProcessing.generateCropsV2(scaledBoundingBox, extendBoundingBox)
+
         }
       }
     }
