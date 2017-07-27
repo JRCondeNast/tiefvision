@@ -149,7 +149,7 @@ object ImageProcessing {
         s"${scaledBoundingBox.left}_${scaledBoundingBox.top}_${scaledBoundingBox.right}_${scaledBoundingBox.bottom}.jpg"
     val destinationFilePath = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolderV2}/${boundingBoxTypeFolder(extendBoundingBox)}/${destinationFilename}"
     val sourceFilePath = s"${Configuration.HomeFolder}/${Configuration.DbImagesFolder}/${scaledBoundingBox.name}.jpg"
-    s"convert ${sourceFilePath} -crop ${scaledBoundingBox.right}x${scaledBoundingBox.bottom}+${scaledBoundingBox.left}+${scaledBoundingBox.top} -type truecolor ${destinationFilePath}" !!;
+    s"convert ${sourceFilePath} -crop ${scaledBoundingBox.right-scaledBoundingBox.left}x${scaledBoundingBox.bottom-scaledBoundingBox.top}+${scaledBoundingBox.left}+${scaledBoundingBox.top} -type truecolor ${destinationFilePath}" !!;
   }
 
 
