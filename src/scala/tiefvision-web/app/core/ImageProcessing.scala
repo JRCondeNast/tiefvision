@@ -144,8 +144,9 @@ object ImageProcessing {
 
   def generateCropsV2(scaledBoundingBox: BoundingBoxV2, scale: Int, extendBoundingBox: Boolean) = {
     import sys.process._
+    val reg_expre = """.jpg|.JPG"""
     val destinationFilename =
-      s"${scaledBoundingBox.name}___${scaledBoundingBox.width}_${scaledBoundingBox.height}_${scaledBoundingBox.object_class}" +
+      s"${scaledBoundingBox.name.split(reg_expre)(0)}___${scaledBoundingBox.width}_${scaledBoundingBox.height}_${scaledBoundingBox.object_class}" +
         s"${scaledBoundingBox.left}_${scaledBoundingBox.top}_${scaledBoundingBox.right}_${scaledBoundingBox.bottom}.jpg"
     val destinationFilePath = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolderV2}/${boundingBoxTypeFolder(extendBoundingBox)}/${destinationFilename}"
     val sourceFilePath = s"${Configuration.HomeFolder}/${Configuration.DbImagesFolder}/${scaledBoundingBox.name}"
