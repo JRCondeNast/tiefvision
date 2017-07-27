@@ -142,7 +142,7 @@ object ImageProcessing {
     }
   }
 
-  def generateCropsV2(scaledBoundingBox: BoundingBoxV2, scale: Int, extendBoundingBox: Boolean) = {
+  def generateCropsV2(scaledBoundingBox: BoundingBoxV2, extendBoundingBox: Boolean) = {
     import sys.process._
     val reg_expre = """.jpg|.JPG"""
     val destinationFilename =
