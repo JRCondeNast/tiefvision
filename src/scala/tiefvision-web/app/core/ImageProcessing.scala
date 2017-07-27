@@ -148,7 +148,7 @@ object ImageProcessing {
       s"${scaledBoundingBox.name}___${scaledBoundingBox.width}_${scaledBoundingBox.height}_${scaledBoundingBox.object_class}" +
         s"${scaledBoundingBox.left}_${scaledBoundingBox.top}_${scaledBoundingBox.right}_${scaledBoundingBox.bottom}.jpg"
     val destinationFilePath = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolderV2}/${boundingBoxTypeFolder(extendBoundingBox)}/${destinationFilename}"
-    val sourceFilePath = s"${Configuration.HomeFolder}/${Configuration.DbImagesFolder}/${scaledBoundingBox.name}.jpg"
+    val sourceFilePath = s"${Configuration.HomeFolder}/${Configuration.DbImagesFolder}/${scaledBoundingBox.name}"
     s"convert ${sourceFilePath} -crop ${scaledBoundingBox.right-scaledBoundingBox.left}x${scaledBoundingBox.bottom-scaledBoundingBox.top}+${scaledBoundingBox.left}+${scaledBoundingBox.top} -type truecolor ${destinationFilePath}" !!;
   }
 
