@@ -32,15 +32,17 @@ function similarityDb(imageFolder, reprocess, kNearestNeighbors)
     print(reference)
 
     local similarities = {}
-
     local referenceEncoding = torch.load(imageFolder .. '/' .. reference):double()
     for testIndex = 1, #files do
       local test = files[testIndex]
       local imageEncoding = torch.load(imageFolder .. '/' .. test):double()
-      local similarity = similarity_lib.similarity(referenceEncoding, imageEncoding)
-      similarities[test] = similarity or -1
+      local class_of_reference = string.match(reference, "__%d+_%d+_(%d+)_")
+      local class_of_file = string.match(test, "__%d+_%d+_(%d+)_")
+      if (class_of_file == class_of_reference) then
+         local similarity = similarity_lib.similarity(referenceEncoding, imageEncoding)
+         similarities[test] = similarity or -1
+      end
     end
-
     if kNearestNeighbors > 0 then
       similarities = tiefvision_reduction.getNearestNeighbors(similarities, kNearestNeighbors)
     end

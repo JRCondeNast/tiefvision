@@ -146,11 +146,11 @@ object ImageProcessing {
     import sys.process._
     val reg_expre = """.jpg|.JPG"""
     val destinationFilename =
-      s"${scaledBoundingBox.name.split(reg_expre)(0)}___${scaledBoundingBox.width}_${scaledBoundingBox.height}_${scaledBoundingBox.object_class}" +
+      s"${scaledBoundingBox.name.split(reg_expre)(0)}___${scaledBoundingBox.width}_${scaledBoundingBox.height}_${scaledBoundingBox.object_class}_" +
         s"${scaledBoundingBox.left}_${scaledBoundingBox.top}_${scaledBoundingBox.right}_${scaledBoundingBox.bottom}.jpg"
     val destinationFilePath = s"${Configuration.HomeFolder}/${Configuration.CropImagesFolderV2}/${boundingBoxTypeFolder(extendBoundingBox)}/${destinationFilename}"
     val sourceFilePath = s"${Configuration.HomeFolder}/${Configuration.DbImagesFolder}/${scaledBoundingBox.name}"
-    s"convert ${sourceFilePath} -crop ${scaledBoundingBox.right-scaledBoundingBox.left}x${scaledBoundingBox.bottom-scaledBoundingBox.top}+${scaledBoundingBox.left}+${scaledBoundingBox.top} -type truecolor ${destinationFilePath}" !!;
+    s"convert ${sourceFilePath} -crop ${scaledBoundingBox.right-scaledBoundingBox.left}x${scaledBoundingBox.top-scaledBoundingBox.bottom}+${scaledBoundingBox.left}+${scaledBoundingBox.bottom} -type truecolor ${destinationFilePath}" !!;
   }
 
 

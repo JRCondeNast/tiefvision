@@ -27,9 +27,11 @@ local function createDb(sourceFolder, destinationFolder)
     paths.mkdir(destinationFolder)
     if(not tiefvision_commons.fileExists(destPath)) then
       print('Encoding ' .. file)
-      local encoderOutput = similarity_db_lib.encodeImage(sourceFolder .. '/' .. file, encoder)
-      torch.save(destPath, encoderOutput)
-      collectgarbage()
+      if (pcall(similarity_db_lib.encodeImage, sourceFolder .. '/' .. file, encoder)) then
+         local encoderOutput = similarity_db_lib.encodeImage(sourceFolder .. '/' .. file, encoder)
+         torch.save(destPath, encoderOutput)
+         collectgarbage()
+      end
     end
   end
 end
