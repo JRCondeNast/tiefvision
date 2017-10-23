@@ -8,17 +8,18 @@
 
 @layout.html {
 
-<div class="container-fluid text-center">
-  <div>
-    <h5>Image To Search</h5>
-    <img id="reference" class="img-thumbnail" src="/@{masterBase}/@{imageSearchResult.image}"/>
-  </div>
-</div>
+@*
+*<div class="container-fluid text-center">
+*  <div>
+*    <h5>Original Image</h5>
+*    <img id="reference" class="img-thumbnail" src="/@{masterBase}/@{imageSearchResult.image}"/>
+*  </div>
+*</div>
+*@
 
 <div class="container-fluid result-container">
   @imageSearchResultDisplay.zipWithIndex.map { case ((_, image), index) =>
-    <div class="pull-left text-center">
-      <h5>@helpers.rank(index + 1) Closest Dress</h5>
+    <div class="pull-left text-center width-twenty-percent" style="padding:0.5%">
       <a href="@{routes.Application.similarityFinderFor(image, isSupervised)}">
         <img class="img-thumbnail" src="/dresses_db/@image"/>
       </a>
