@@ -1,0 +1,29 @@
+@*
+* Copyright (C) 2016 Pau Carré Cardona - All Rights Reserved
+* You may use, distribute and modify this code under the
+* terms of the Apache License v2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt).
+*@
+@(imageSearchResult: core.ImageSearchResult, isSupervised: Boolean, masterBase: String, bboxBase: String)
+@imageSearchResultDisplay = @{imageSearchResult.distanceToSimilarImages.take(5)}
+
+@layout.html {
+
+<div class="container-fluid text-center">
+  <div>
+    <h5>Image To Search</h5>
+    <img id="reference" class="img-thumbnail" src="/@{masterBase}/@{imageSearchResult.image}"/>
+  </div>
+</div>
+
+<div class="container-fluid result-container">
+  @imageSearchResultDisplay.zipWithIndex.map { case ((_, image), index) =>
+    <div class="pull-left text-center">
+      <h5>@helpers.rank(index + 1) Closest Dress</h5>
+      <a href="@{routes.Application.similarityFinderFor(image, isSupervised)}">
+        <img class="img-thumbnail" src="/dresses_db/@image"/>
+      </a>
+    </div>
+  }
+</div>
+
+}
